@@ -1,0 +1,15 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\Armatillery\ArmaTillery_\Assets\Behaviours\Managers\ArmaPlayerManager.cs">
+    <Files>
+      <File FileName="..\..\Armatillery\ArmaTillery_\Assets\Behaviours\Actors\Enemies\Classes\Ranged\EnemyCommando.cs" Line="12" Column="6" />
+      <File FileName="..\..\Armatillery\ArmaTillery_\Assets\Behaviours\Actors\Enemies\ArmaEnemy.cs" Line="94" Column="3" />
+      <File FileName="..\..\Armatillery\ArmaTillery_\Assets\Behaviours\Managers\GameManager.cs" Line="24" Column="32" />
+      <File FileName="..\..\Armatillery\ArmaTillery_\Assets\Behaviours\Managers\ArmaPlayerManager.cs" Line="29" Column="2" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -46,12 +46,25 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\MaxCamera.cs" />
-     <Compile Include="Assets\Scripts\Astar.cs" />
-     <Compile Include="Assets\Scripts\CombineMeshes.cs" />
-     <Compile Include="Assets\Scripts\Dijkstra.cs" />
-     <Compile Include="Assets\Scripts\TruncOct.cs" />
-     <Compile Include="Assets\Scripts\WorldGen.cs" />
+     <Compile Include="Assets\Scripts\Actors\AIActor.cs" />
+     <Compile Include="Assets\Scripts\Actors\AIDemo.cs" />
+     <Compile Include="Assets\Scripts\Actors\ActorBase.cs" />
+     <Compile Include="Assets\Scripts\Actors\ActorManager.cs" />
+     <Compile Include="Assets\Scripts\Actors\PlayerActor.cs" />
+     <Compile Include="Assets\Scripts\Actors\TeamManager.cs" />
+     <Compile Include="Assets\Scripts\Actors\TeamX.cs" />
+     <Compile Include="Assets\Scripts\Actors\TeamY.cs" />
+     <Compile Include="Assets\Scripts\Core\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Core\GameStates.cs" />
+     <Compile Include="Assets\Scripts\Core\TruncOct.cs" />
+     <Compile Include="Assets\Scripts\Core\WorldGen.cs" />
+     <Compile Include="Assets\Scripts\GUI\AxisObject.cs" />
+     <Compile Include="Assets\Scripts\GUI\GUIManager.cs" />
+     <Compile Include="Assets\Scripts\GUI\Selection.cs" />
+     <Compile Include="Assets\Scripts\Pathfinding\Dijkstra.cs" />
+     <Compile Include="Assets\Scripts\Pathfinding\aStar.cs" />
+     <Compile Include="Assets\Scripts\Pathfinding\aStarPerUpdate.cs" />
+     <Compile Include="Assets\Scripts\Performance\CombineMeshes.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

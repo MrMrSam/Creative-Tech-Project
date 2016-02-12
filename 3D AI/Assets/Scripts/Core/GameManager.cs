@@ -1,6 +1,5 @@
 ﻿/// <summary>
 /// GameManager controls the game state machine and drives the
-/// game pending on the current game state
 /// Created and implemented by Sam Endean - 18/01/16
 /// </summary>
 using UnityEngine;
@@ -12,9 +11,13 @@ public class GameManager : MonoBehaviour
     private static GameManager m_instance = null;
     public static GameManager instance { get { return m_instance; } }
 
-	public float genDistance = 10;
+	public float genDistance = 25;
 
 	public List<GameObject> allTrocts;
+
+	public int noOfVessels = 1;
+
+	public int turnTeam;
 
     private GameStates m_GameState;
     public GameStates GameState
@@ -29,7 +32,7 @@ public class GameManager : MonoBehaviour
         m_instance = this;
 
         //set up initial GameState
-        m_GameState = GameStates.gameplay;
+        m_GameState = GameStates.menu;
 
 		foreach (GameObject _troct in allTrocts)
 		{
@@ -42,12 +45,83 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public void TurnEnd()
 	{
-		//switch the active team and tell the ActorManager
+		//switch the active team and tell the TeamManager
+		if (turnTeam == 0)
+		{
+			turnTeam++;
+		}
+		else
+		{
+			turnTeam--;
+		}
+
+		ResetFOW();
+
+		//switch selection's target to be the first team member
+		TeamManager.instance.SwitchTeams(turnTeam);
+
+		GUIManager.instance.TeamChange(turnTeam);
+	}
+
+	/// <summary>
+	/// Commence the game with the specified teamTypes.
+	/// </summary>
+	/// <param name="_teamAType">If set to <c>true</c> _team A is AI controlled.</param>
+	/// <param name="_teamBType">If set to <c>true</c> _team B is AI controlled.</param>
+	public void Commence(bool _teamAType, bool _teamBType)
+	{
+		//gen the world
+		allTrocts = WorldGen.instance.GenWorld(genDistance);
+
+		//pass team type data to team manager and tell it to spawn teams
+		TeamManager.instance.SetTeams(allTrocts, _teamAType, _teamBType, noOfVessels);
+
+		GameState = GameStates.gameplay;
+
+		//start with team 0's turn
+		turnTeam = 0;
+
+		//set selection's target to teamA's start troct
+		Selection.instance.setTarget(TeamManager.instance.teamASpawn);
+
+		TeamManager.instance.SwitchTeams(0);
+	}
+
+	/// <summary>
+	/// Resets the fog of war.
+	/// </summary>
+	public void ResetFOW()
+	{
+		//reset fog of war on all trocts
+		foreach (GameObject _trOct in allTrocts)
+		{
+			_trOct.GetComponent<TruncOct>().fogOfWar.SetActive(true);
+		}
+	}
+
+	/// <summary>
+	/// Called once a team has been defeated.
+	/// </summary>
+	/// <param name="_team">the winning team.</param>
+	public void TeamWin(int _team)
+	{
+		if (_team == 0)
+		{
+			GUIManager.instance.winningTeam.text = "Team A won!";
+		}
+		else
+		{
+			GUIManager.instance.winningTeam.text = "Team B won!";
+		}
+
+		GameState = GameStates.gameOver;
+
 	}
 
 
-    void Start()
-    {
-		allTrocts = WorldGen.instance.GenWorld (genDistance);
-	}
+
+//    void Start()
+//    {
+//		allTrocts = WorldGen.instance.GenWorld (genDistance);
+//	}
 }

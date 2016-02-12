@@ -7,11 +7,11 @@ public abstract class ActorBase : MonoBehaviour
 	#region Public Members
 	public string actorName;
 	public List<GameObject> m_projectiles = new List<GameObject>(), currentPath;
-	public float health = 100.0f;
-	public int currentFacing = -1, Team, actionPoints = 2;
-	public GameObject startNode, goalNode, currentTrOct;
+	public float health = 10.0f;
+	public int currentFacing = -1, Team, actionPoints = 3;
+	public GameObject Torpedo, startNode, goalNode, currentTrOct;
 	#endregion
-	
+
 	#region Protected Members
 	protected Vector3 shootDir = new Vector3(1, 0, 0);
 	#endregion
@@ -114,6 +114,19 @@ public abstract class ActorBase : MonoBehaviour
 		return -1;
 	}
 
+	/// <summary>
+	/// Called by TeamManager upon placing actors, this sets the facing.
+	/// </summary>
+	/// <param name="_face">The facing to face</param>
+	public void setFacing(GameObject _trOct, int _face)
+	{
+		List<Vector3> facings = _trOct.GetComponent<TruncOct> ().Faces;
+
+		transform.forward = facings[_face].normalized;
+
+		currentFacing = _face;
+	}
+
 	public virtual void Init()
 	{
 	}
@@ -154,7 +167,7 @@ public abstract class ActorBase : MonoBehaviour
 			GameObject newTrOct = GameManager.instance.allTrocts[currentTrOct.GetComponent<TruncOct>().connectionObjects[currentFacing]];
 
 			//see if it is clear
-			if (newTrOct.GetComponent<TruncOct>().containedActor == null || newTrOct.GetComponent<TruncOct>().type != TruncOct.tileType.dead)
+			if (!newTrOct.GetComponent<TruncOct>().containedActor && newTrOct.GetComponent<TruncOct>().type != TruncOct.tileType.dead)
 			{
 				currentTrOct = newTrOct;
 
@@ -171,6 +184,38 @@ public abstract class ActorBase : MonoBehaviour
 		return false;
 	}
 
+	public void TakeDamage()
+	{
+		health -= 50;
+
+		//check if now dead
+		if (health < 0)
+		{
+			//tell the team Manager to kill this actor
+			TeamManager.instance.Kill(gameObject);
+		}
+	}
+
+
+	public void Shootforwards()
+	{
+		if (Torpedo.activeSelf != true)
+		{
+			if (actionPoints != 0)
+			{
+				Torpedo.SetActive(true);
+
+				actionPoints--;
+			}
+			else
+			{
+				// :(
+			}
+		}
+
+
+	}
+
 	/// <summary>
 	/// Plots an A* route by calling the central A* plotter
 	/// </summary>
@@ -179,20 +224,5 @@ public abstract class ActorBase : MonoBehaviour
 		List<GameObject> route = GameManager.instance.GetComponent<aStar> ().GeneratePath (currentTrOct, goalNode);
 
 		currentPath = route;
-	}
-
-	public void InflictDamage()
-	{
-		if (health > 0)
-		{
-			health -= Random.Range(8, 15);
-			Debug.Log("Health: " + health);
-			//StartCoroutine(InflictDamageCol(Color.white, Color.black, 1.0f));
-			
-			if (health <= 0)
-			{
-				Debug.Log("explode");
-			}
-		}
 	}
 }

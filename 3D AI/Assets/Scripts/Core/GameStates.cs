@@ -3,5 +3,6 @@
     menu,
     gameplay,
     gamepause,
-    debug
+    debug,
+	gameOver
 };

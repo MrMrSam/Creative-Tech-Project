@@ -49,6 +49,7 @@ public class WorldGen : MonoBehaviour
 		intTrOct.name = tOct.name + " Interior";
 		intTrOct.transform.parent = tOct.transform;
 		intTrOct.SetActive(false);
+		tOct.GetComponent<TruncOct>().interior = intTrOct;
 		
 		tOct.transform.parent = allTrOcts.transform;
 		truncOcts.Add (tOct);
@@ -118,136 +119,6 @@ public class WorldGen : MonoBehaviour
 		return truncOcts;
 	}
 
-
-	void Start ()
-	{
-
-
-//		//disable the vertices and edges surrounding applicable faces
-//		for (int i = 0; i < truncOcts.Count; i++)
-//		{
-//			for (int j = 0; j < 14; j++)
-//			{
-//				if (truncOcts[i].GetComponent<TruncOct>().connections[j] == TruncOct.connectionState.Connected &&
-//				    (j == 0 || j == 1 || j == 2 || j == 6 || j == 7 || j == 8 || j == 9))
-//				{
-//
-//					switch (j)
-//					{
-//					case 0:
-//						//disable edges 12, 14, 15, 17 and vertices 4, 5, 12, 14
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(12).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(14).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(15).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(17).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(4).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(5).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(12).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(14).gameObject.SetActive(false);
-//						break;
-//
-//					case 1:
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(24).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(25).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(31).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(32).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(8).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(10).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(16).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(18).gameObject.SetActive(false);
-//						break;
-//
-//					case 2:
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(0).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(1).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(5).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(3).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(0).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(1).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(20).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(21).gameObject.SetActive(false);
-//						break;
-//
-//					case 6:
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(1).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(2).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(15).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(16).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(27).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(29).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(0).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(21).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(9).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(17).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(5).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(12).gameObject.SetActive(false);
-//						break;
-//
-//					case 7:
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(17).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(16).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(33).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(35).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(7).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(6).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(14).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(5).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(17).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(11).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(23).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(2).gameObject.SetActive(false);
-//						break;
-//
-//					case 8:
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(12).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(6).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(8).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(30).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(32).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(13).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(4).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(14).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(2).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(22).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(10).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(16).gameObject.SetActive(false);
-//						break;
-//
-//					case 9:
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(14).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(13).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(24).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(26).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(0).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allEdges.transform.GetChild(2).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(12).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(4).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(16).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(8).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(20).gameObject.SetActive(false);
-//						truncOcts[i].GetComponent<TruncOct>().allVertices.transform.GetChild(0).gameObject.SetActive(false);
-//						break;
-//					}
-//				}
-//			}
-//		}
-
-
-	}
-
-//	void Update()
-//	{
-//		if (!updated)
-//		{
-//			Pathfinding.SetActive(true);
-//			Cam.SetActive(true);
-//			updated = true;
-//		}
-//		else
-//		{
-//		}
-//	}
-
 	//this spawns a trunc and tries to spawn a trunk on all of the connections
 	void SpawnTrunc (GameObject _trOct, int _connection, float _distance)
 	{
@@ -266,6 +137,7 @@ public class WorldGen : MonoBehaviour
 		intTrOct.transform.position = newTrOct.transform.position;
 		intTrOct.transform.parent = newTrOct.transform;
 		intTrOct.SetActive(false);
+		newTrOct.GetComponent<TruncOct>().interior = intTrOct;
 
 		int newConnection = ConvertConnecton(_connection);
 

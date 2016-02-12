@@ -10,8 +10,14 @@ public class PlayerActor : ActorBase
 
 	protected virtual void Start()
 	{
-		Team = 0;
-		actorName = "TestActor";
+		if (Team == 0)
+		{
+			actorName = "A" + PlayerActorID;
+		}
+		else
+		{
+			actorName = "B" + PlayerActorID;
+		}
 		base.Init();
 	}
 

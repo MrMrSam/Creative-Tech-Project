@@ -4,8 +4,14 @@ using System.Collections;
 
 public class GUIManager : MonoBehaviour
 {
-	public Button buttonSelectUnit, buttonPlanRoute, buttonRotate, buttonMoveforwards;
-	public Text textUnitSelected, textActionPointsRemaining, textUnitName, textActionPoints;
+	public Canvas Menu, Pause, GamePlay, GameOver; 
+	public Button buttonSelectUnit, buttonOpenFire, buttonRotate, buttonMoveforwards, buttonReset, tempTeamAWin;
+	public Text textUnitSelected, textActionPointsRemaining, textUnitName, textActionPoints, currentTeam, winningTeam;
+
+	public Toggle teamAAI, teamBAI, teamAPC, teamBPC;
+
+	//public Team.TeamType TeamA, TeamB;
+	public bool TeamA, TeamB;
 
 	private GameObject selectedActor;
 
@@ -34,18 +40,34 @@ public class GUIManager : MonoBehaviour
 			Tick();
 			break;
 		case GameStates.menu:
+			break;		
+		case GameStates.gameOver:
+			GameOverGUI();
 			break;
 		}
 	}
 
-	void Tick()
+	/// <summary>
+	/// Tick whilst in the menuState.
+	/// </summary>
+	private void GameOverGUI()
+	{
+		GamePlay.gameObject.SetActive(false);
+
+		GameOver.gameObject.SetActive(true);
+	}
+
+	/// <summary>
+	/// Tick whilst in the GamePlayState.
+	/// </summary>
+	private void Tick()
 	{
 		switch (Selection.instance.selectState)
 		{
 		case Selection.SelectionState.None:
 			//set all selection/control logic to inactive
 			buttonSelectUnit.gameObject.SetActive(false);
-			buttonPlanRoute.gameObject.SetActive(false);
+			buttonOpenFire.gameObject.SetActive(false);
 			buttonRotate.gameObject.SetActive(false);
 			buttonMoveforwards.gameObject.SetActive(false);
 			//set text
@@ -66,7 +88,7 @@ public class GUIManager : MonoBehaviour
 
 		case Selection.SelectionState.ActorSelected:
 			buttonSelectUnit.gameObject.SetActive(false);
-			buttonPlanRoute.gameObject.SetActive(true);
+			buttonOpenFire.gameObject.SetActive(true);
 			buttonRotate.gameObject.SetActive(true);
 			buttonMoveforwards.gameObject.SetActive(true);
 
@@ -84,13 +106,15 @@ public class GUIManager : MonoBehaviour
 			//feed actionPoints remaining
 			break;
 		case Selection.SelectionState.TrOctSelected:
-			if (Selection.instance.target.GetComponent<TruncOct>().containedActor /*&& Selection.instance.target.GetComponent<TruncOct>().containedActor*/)
+			//only select the actor if it is that team's turn
+			if (Selection.instance.target.GetComponent<TruncOct>().containedActor &&
+			    Selection.instance.target.GetComponent<TruncOct>().containedActor.GetComponent<ActorBase>().Team == GameManager.instance.turnTeam)
 			{
 				selectedActor = Selection.instance.target.GetComponent<TruncOct>().containedActor;
 
 				//set all selection/control logic
 				buttonSelectUnit.gameObject.SetActive(true);
-				buttonPlanRoute.gameObject.SetActive(false);
+				buttonOpenFire.gameObject.SetActive(false);
 				buttonRotate.gameObject.SetActive(false);
 				buttonMoveforwards.gameObject.SetActive(false);
 
@@ -103,7 +127,7 @@ public class GUIManager : MonoBehaviour
 			{
 				//set all selection/control logic
 				buttonSelectUnit.gameObject.SetActive(false);
-				buttonPlanRoute.gameObject.SetActive(false);
+				buttonOpenFire.gameObject.SetActive(false);
 				buttonRotate.gameObject.SetActive(false);
 				buttonMoveforwards.gameObject.SetActive(false);
 				
@@ -116,6 +140,42 @@ public class GUIManager : MonoBehaviour
 			}
 			break;
 		}
+
+
+		//test for esc input
+		if (Input.GetKeyUp(KeyCode.Escape))
+		{
+			PauseGame();
+		}
+	}
+
+	/// <summary>
+	/// Changes the team dialog.
+	/// </summary>
+	/// <param name="_team">_team.</param>
+	public void TeamChange(int _team)
+	{
+		if (_team == 0)
+		{
+			currentTeam.text = "Team: A";
+		}
+		else
+		{
+			currentTeam.text = "Team: B";
+		}
+	}
+
+
+	/// <summary>
+	/// Pauses the game and switches canvas.
+	/// </summary>
+	private void PauseGame()
+	{
+		GameManager.instance.GameState = GameStates.gamepause;
+
+		//switch canvas
+		Pause.gameObject.SetActive(true);
+		GamePlay.gameObject.SetActive(false);
 	}
 
 
@@ -141,6 +201,10 @@ public class GUIManager : MonoBehaviour
 	{
 		if (selectedActor.GetComponent<ActorBase> ().TryMoveForwards ())
 		{
+			//tell the team manager to redo the FOW
+			GameManager.instance.ResetFOW();
+			TeamManager.instance.ClearFOW(selectedActor.GetComponent<ActorBase>().Team);
+
 			//Reset the GUI to None
 			Selection.instance.selectState = Selection.SelectionState.TrOctSelected;
 		}
@@ -149,9 +213,9 @@ public class GUIManager : MonoBehaviour
 	/// <summary>
 	/// Sets the selectionMode to be planning route the route.
 	/// </summary>
-	public void PlanRoute ()
+	public void OpenFire ()
 	{
-		Selection.instance.selectState = Selection.SelectionState.PlanRoute;
+		selectedActor.GetComponent<ActorBase>().Shootforwards();
 	}
 
 	/// <summary>
@@ -163,11 +227,96 @@ public class GUIManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Moves the unit forwards, called when the button is pressed;
+	/// Resume the game and change canvas.
 	/// </summary>
-	public void MoveUnitForwards()
+	public void ResumeGame()
 	{
-		//selectedActor.GetComponent
+		GameManager.instance.GameState = GameStates.gameplay;
+
+		//switch from the pause canvas to the gameplay canvas
+		Pause.gameObject.SetActive(false);
+		GamePlay.gameObject.SetActive(true);
 	}
+
+
+/// <summary>
+/// Switchs the type of the team.
+/// </summary>
+/// <param name="_toggle">_toggle.</param>
+	public void SwitchTeamType(Toggle _toggle)
+	{
+		if (_toggle == teamAAI)
+		{
+			//what has it been switched to?
+			if (_toggle.isOn)
+			{
+				teamAPC.isOn = false;
+			}
+			else
+			{
+				teamAPC.isOn = true;
+			}
+		}
+		else if (_toggle == teamBAI)
+		{
+			//what has it been switched to?
+			if (_toggle.isOn)
+			{
+				teamBPC.isOn = false;
+			}
+			else
+			{
+				teamBPC.isOn = true;
+			}
+		}
+		else if (_toggle == teamAPC)
+		{
+			//what has it been switched to?
+			if (_toggle.isOn)
+			{
+				teamAAI.isOn = false;
+			}
+			else
+			{
+				teamAAI.isOn = true;
+			}
+		}
+		else if (_toggle == teamBPC)
+		{
+			//what has it been switched to?
+			if (_toggle.isOn)
+			{
+				teamBAI.isOn = false;
+			}
+			else
+			{
+				teamBAI.isOn = true;
+			}
+		}
+	}
+
+	public void ResetGame()
+	{
+		Application.LoadLevel("WorldGen");
+	}
+
+	public void TempTeamAWin()
+	{
+		GameManager.instance.TeamWin(0);
+	}
+
+
+	/// <summary>
+	/// Tells the GameManager to commence the game.
+	/// </summary>
+	public void CommenceGame()
+	{
+		//feed the GameManager knowledge of whether each team is AI or not
+		GameManager.instance.Commence(teamAAI.isOn, teamBAI.isOn);
+
+		Menu.gameObject.SetActive(false);
+		GamePlay.gameObject.SetActive(true);
+	}
+
 	#endregion
 }

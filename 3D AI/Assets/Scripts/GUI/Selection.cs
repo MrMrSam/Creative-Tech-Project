@@ -156,8 +156,8 @@ public class Selection : MonoBehaviour
 					{
 						if (troctHit != target)
 						{
-							troctHit.transform.GetChild (0).gameObject.SetActive (true);
-							troctHit.transform.GetChild (0).GetComponent<MeshRenderer> ().material.color = Color.green;
+							troctHit.GetComponent<TruncOct>().interior.gameObject.SetActive (true);
+							troctHit.GetComponent<TruncOct>().interior.GetComponent<MeshRenderer> ().material.color = Color.green;
 						}
 						
 						//return last highlight to its previous colour
@@ -181,12 +181,12 @@ public class Selection : MonoBehaviour
 				else 
 				{
 					//if selecting a new troct, colour it and remove the colouring from lastHighlight
-					if (troctHit != lastHighlight)
+					if (troctHit != lastHighlight && troctHit.GetComponent<TruncOct>())
 					{
 						if (troctHit != target)
 						{
-							troctHit.transform.GetChild (0).gameObject.SetActive (true);
-							troctHit.transform.GetChild (0).GetComponent<MeshRenderer> ().material.color = Color.green;
+							troctHit.GetComponent<TruncOct>().interior.gameObject.SetActive (true);
+							troctHit.GetComponent<TruncOct>().interior.GetComponent<MeshRenderer> ().material.color = Color.green;
 						}
 						
 						//return last highlight to its previous colour
@@ -199,8 +199,6 @@ public class Selection : MonoBehaviour
 					}
 				}
 
-
-
 				//click the currently selected Troct
 				if (Input.GetMouseButtonUp (0))
 				{
@@ -208,9 +206,7 @@ public class Selection : MonoBehaviour
 				}
 			}
 		}
-		
-		////////Orbit Position
-		
+
 		// affect the desired Zoom distance if we roll the scrollwheel
 		desiredDistance -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomRate * Mathf.Abs(desiredDistance);
 		//clamp the zoom min/max
@@ -238,6 +234,8 @@ public class Selection : MonoBehaviour
 			if (_troctHit.GetComponent<TruncOct>().IsNextTo(selectedActor.GetComponent<ActorBase>().currentTrOct))
 			{
 				selectedActor.GetComponent<ActorBase>().TryRotate(_troctHit.transform);
+
+				selectState = SelectionState.ActorSelected;
 			}
 			break;
 		case SelectionState.PlanRoute:
@@ -259,8 +257,8 @@ public class Selection : MonoBehaviour
 			target.GetComponent<TruncOct>().ReturnToTypeColour();
 		}
 
-		_target.transform.GetChild(0).gameObject.SetActive(true);
-		_target.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.cyan;
+		_target.GetComponent<TruncOct>().interior.gameObject.SetActive(true);
+		_target.GetComponent<TruncOct>().interior.GetComponent<MeshRenderer>().material.color = Color.cyan;
 
 		target = _target;
 

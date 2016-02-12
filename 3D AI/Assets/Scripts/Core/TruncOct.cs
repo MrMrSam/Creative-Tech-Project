@@ -21,7 +21,8 @@ public class TruncOct : MonoBehaviour
 	Vector3[] newVertices;
 	Vector3[][] faces, pairs;
 
-	public GameObject containedActor;
+	public GameObject containedActor,
+	fogOfWar, interior;
 
 	public int trOctNo;
 
@@ -83,28 +84,28 @@ public class TruncOct : MonoBehaviour
 		switch (type)
 		{
 		case tileType.clear:
-			transform.GetChild(0).gameObject.SetActive(false);
-			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = ((Material)Resources.Load("Materials/staticMat")).color;
+			interior.SetActive(false);
+			interior.GetComponent<MeshRenderer>().material.color = ((Material)Resources.Load("Materials/staticMat")).color;
 			break;
 
 		case tileType.dead:
-			transform.GetChild(0).gameObject.SetActive(true);
-			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.white;
+			interior.gameObject.SetActive(true);
+			interior.GetComponent<MeshRenderer>().material.color = Color.white;
 			break;
 
 		case tileType.showEnds:
-			transform.GetChild(0).gameObject.SetActive(true);
-			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
+			interior.gameObject.SetActive(true);
+			interior.GetComponent<MeshRenderer>().material.color = Color.red;
 			break;
 
 		case tileType.showPath:
-			transform.GetChild(0).gameObject.SetActive(true);
-			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.blue;
+			interior.gameObject.SetActive(true);
+			interior.GetComponent<MeshRenderer>().material.color = Color.blue;
 			break;
 
 		case tileType.showSearch:
-			transform.GetChild(0).gameObject.SetActive(true);
-			transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.yellow;
+			interior.gameObject.SetActive(true);
+			interior.GetComponent<MeshRenderer>().material.color = Color.yellow;
 			break;
 		}
 	}

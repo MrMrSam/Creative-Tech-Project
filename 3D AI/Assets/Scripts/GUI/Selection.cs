@@ -242,7 +242,11 @@ public class Selection : MonoBehaviour
 			selectedActor.GetComponent<ActorBase>().currentPath = tentPath;
 			break;
 		default: //if not planning route or rotating, just select the troct as normal
-			setTarget (_troctHit);
+
+			if (_troctHit.GetComponent<TruncOct> ())
+			{
+				setTarget (_troctHit);
+			}
 			break;
 		}
 	}

@@ -29,14 +29,21 @@ public abstract class ActorBase : MonoBehaviour
 	// Update is called once per frame
 	protected void Update ()
 	{
-		if (!currentTrOct) 
-		{
+		if (!currentTrOct) {
 			//set the currentTroct to be the current troct and set it's containedActor to this
 			currentTrOct = SetTroct (startNode);
 			
 			//set the troct's containedActor to be this
 			currentTrOct.GetComponent<TruncOct> ().containedActor = gameObject;
 		}
+		else //check if the current troct's contained actor = this
+		{
+			if (currentTrOct.GetComponent<TruncOct> ().containedActor != gameObject)
+			{
+				currentTrOct.GetComponent<TruncOct> ().containedActor = gameObject;
+			}
+		}
+
 		if (currentFacing == -1)
 		{
 			currentFacing = FindFacing(currentTrOct);

@@ -180,6 +180,8 @@ public class TeamManager : MonoBehaviour
 	{
 		int team = _actor.GetComponent<ActorBase>().Team;
 
+		_actor.GetComponent<ActorBase> ().currentTrOct.GetComponent<TruncOct> ().containedActor = null;
+
 		_actor.SetActive(false);
 
 		//remove from the team roster and set to disabled

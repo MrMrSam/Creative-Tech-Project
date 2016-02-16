@@ -1,11 +1,15 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GUI\Selection.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GOAP\GoapCore.cs">
     <Files>
-      <File FileName="Assets\Scripts\GUI\Selection.cs" Line="252" Column="44" />
-      <File FileName="..\..\CGD_ArmadHeroes\Unity\ArmadHeroes\Assets\Armatillery\Behaviours\Actors\Actor.cs" Line="1" Column="1" />
-      <File FileName="f:\Work\UNI WORK 2016\CGD_ArmadHeroes\Unity\ArmadHeroes\Assets\Armatillery\Behaviours\Managers\WorldGenerator.cs" Line="1" Column="1" />
-      <File FileName="f:\Work\UNI WORK 2016\CGD_ArmadHeroes\Unity\ArmadHeroes\Assets\Armatillery\Rewired\Internal\Scripts\Editor\CustomInspectors\InputManagerInspector.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GUI\GUIManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GUI\Selection.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Actors\ActorBase.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Actors\TeamManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GOAP\GoapGoal.cs" Line="13" Column="21" />
+      <File FileName="Assets\Scripts\GOAP\GoapCore.cs" Line="29" Column="46" />
+      <File FileName="Assets\Scripts\GOAP\GoapWorldstate.cs" Line="12" Column="28" />
+      <File FileName="Assets\Scripts\GOAP\GoapSensor.cs" Line="9" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

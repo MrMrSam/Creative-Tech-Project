@@ -95,6 +95,7 @@ public class GameManager : MonoBehaviour
 		//reset fog of war on all trocts
 		foreach (GameObject _trOct in allTrocts)
 		{
+			_trOct.GetComponent<TruncOct> ().inFow = true;
 			_trOct.GetComponent<TruncOct>().fogOfWar.SetActive(true);
 		}
 	}

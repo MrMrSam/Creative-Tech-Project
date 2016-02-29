@@ -7,13 +7,94 @@ using System.Collections.Generic;
 
 public class GoapWorldstate : MonoBehaviour 
 {
-	List<TruncOct> topology;
+	//the actual world/map info
+	public List<GameObject> topology;
 
-	List<EnemyPosition> combat;
+	//position and id of all enemies known about (within sight range AND within sight range of allies in sight range)
+	public List<EnemyPosition> enemyData;
+
+	public List<ActorBase> allies;
+
+	//the troct being occupied by the actor
+	public TruncOct selfTroct;
+
+	//the facing of the actor
+	public int selfFacing;
+
+	public void generateWorldState (AIActor _goapActor)
+	{
+		//fetch the troct info from the game manager
+		topology = GameManager.instance.allTrocts;
+
+		//scan for enemies and allies within sight range
+		enemyData = EnemyScan(_goapActor, new List<EnemyPosition> (), new List<ActorBase> ());
+
+		//Go into actor and get current troct
+		selfTroct = _goapActor.currentTrOct.GetComponent<TruncOct>();
+
+		//go into actor and get the current facing
+		selfFacing = _goapActor.currentFacing;
+
+		allies = TeamManager.instance.GetTeam(_goapActor.Team);
+	}
+
+	/// <summary>
+	/// Scans to find enemies and alliew within sight range, all enemies found are then added to the list and then any allies found are also scanned from
+	/// </summary>
+	/// <returns>The found enemies</returns>
+	/// <param name="_actor">the actor scanning</param>
+	private List<EnemyPosition> EnemyScan (AIActor _actor, List<EnemyPosition> _enemies, List<ActorBase> _allies)
+	{
+		List<EnemyPosition> enemyData = new List<EnemyPosition> ();
+
+		//search all trocts within sight range of the actor.
+		for (int i = 0; i < topology.Count; i++)
+		{
+			//if within range and not inFow
+			if (Vector3.Distance (_actor.gameObject.transform.position, topology [i].gameObject.transform.position) < _actor.viewDistance && !topology [i].GetComponent<TruncOct> ().inFow &&
+				topology [i].GetComponent<TruncOct> ().containedActor != null)
+			{
+				ActorBase actorFound = topology [i].GetComponent<TruncOct> ().containedActor.GetComponent<ActorBase> ();
+					
+				//Test if the actor is on this team
+				if (topology [i].GetComponent<TruncOct> ().containedActor.GetComponent<ActorBase> ().Team == _actor.Team)
+				{
+					//if so they are added to the allies list after seeing whether they have already been scanned
+					if (!_allies.Contains (actorFound))
+					{
+						_allies.Add (actorFound);
+
+						//scan the actorfound in this case
+						_enemies.AddRange(EnemyScan(actorFound.gameObject.GetComponent<AIActor>(), _enemies, _allies));
+					}
+				}
+				else
+				{
+					EnemyPosition enemy = new EnemyPosition ();
+
+					enemy.enemy = actorFound;
+					enemy.enemyLocation = actorFound.currentTrOct.GetComponent<TruncOct>();
+
+					//if the found enemy is not currently in the list, add it in
+					if (!_enemies.Contains(enemy))
+					{
+						_enemies.Add (enemy);
+					}
+				}
+			}
+		}
+			
+		return _enemies;
+	}
+
 }
+
 
 public class EnemyPosition
 {
-	ActorBase enemy;
-	TruncOct enemyLocation;
+	//the actual enemy
+	public ActorBase enemy;
+
+	//the Troct location of the enemy.
+	public TruncOct enemyLocation;
 }

@@ -7,7 +7,9 @@ public abstract class ActorBase : MonoBehaviour
 	#region Public Members
 	public string actorName;
 	public List<GameObject> m_projectiles = new List<GameObject>(), currentPath;
-	public float health = 10.0f;
+	public float health = 10.0f,
+	viewDistance;
+	public int progressAlongPath = 0;
 	public int currentFacing = -1, Team, actionPoints = 3;
 	public GameObject Torpedo, startNode, goalNode, currentTrOct;
 	#endregion
@@ -18,12 +20,18 @@ public abstract class ActorBase : MonoBehaviour
 
 	void Start ()
 	{
-		//if no startNode, set one
-		if (!startNode)
-		{
+//		//if no startNode, set one
+//		if (!startNode)
+//		{
+//
+//		}
 
-		}
+		currentPath = new List<GameObject>();
+
 		currentFacing = FindFacing(currentTrOct);
+
+		viewDistance = TeamManager.instance.fowDistance;
+
 	}
 	
 	// Update is called once per frame
@@ -141,7 +149,7 @@ public abstract class ActorBase : MonoBehaviour
 	/// <summary>
 	/// Tries to rotate (tests to see if it has valid number of action points.
 	/// </summary>
-	public void TryRotate(Transform _lookAt)
+	public bool TryRotate(Transform _lookAt)
 	{
 		//if it still has actionPoints
 		if (actionPoints != 0)
@@ -151,10 +159,12 @@ public abstract class ActorBase : MonoBehaviour
 			currentFacing = FindFacing(currentTrOct);
 
 			actionPoints--;
+
+			return true;
 		}
 		else
 		{
-			//ech.jpg
+			return false;
 		}
 
 	}
@@ -203,24 +213,24 @@ public abstract class ActorBase : MonoBehaviour
 		}
 	}
 
-
-	public void Shootforwards()
+	/// <summary>
+	/// Attempt to shoot forwards
+	/// </summary>
+	public bool Shootforwards()
 	{
-		if (Torpedo.activeSelf != true)
-		{
-			if (actionPoints != 0)
-			{
-				Torpedo.SetActive(true);
 
-				actionPoints--;
-			}
-			else
-			{
-				// :(
-			}
+		if (actionPoints != 0)
+		{
+			Torpedo.SetActive(true);
+
+			actionPoints--;
+
+			//tell the AI system that the actor shot successfully (has actionpoints)
+			return true;
 		}
 
-
+		//tell the AI system that the actor could not move at this time.
+		return false;
 	}
 
 	/// <summary>
@@ -229,6 +239,8 @@ public abstract class ActorBase : MonoBehaviour
 	public void plotRoute()
 	{
 		List<GameObject> route = GameManager.instance.GetComponent<aStar> ().GeneratePath (currentTrOct, goalNode);
+
+		progressAlongPath = 0;
 
 		currentPath = route;
 	}

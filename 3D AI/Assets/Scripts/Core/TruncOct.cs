@@ -9,7 +9,7 @@ public class Node
 	
 	//distance so far
 	public float tentativeDist = float.PositiveInfinity;
-	
+
 	//the closest node
 	public Node tentDistNode;
 	public float heuristic;
@@ -25,6 +25,8 @@ public class TruncOct : MonoBehaviour
 	fogOfWar, interior;
 
 	public int trOctNo;
+
+	public bool inFow;
 
 	public enum tileType {clear, dead, showPath, showSearch, showEnds};
 
@@ -191,9 +193,3 @@ public class TruncOct : MonoBehaviour
 		GetComponent<MeshRenderer>().material = meshFilters[1].GetComponent<MeshRenderer>().sharedMaterial;
 	}
 }
-
-//public class Face
-//{
-//	public int faceNo;
-//	public Vector3 localPos;
-//}

@@ -138,7 +138,7 @@ public class TeamManager : MonoBehaviour
 			foreach (GameObject _actor in teamB.members)
 			{
 				//if in the FOW
-				if (_actor.GetComponent<ActorBase>().currentTrOct.GetComponent<TruncOct>().fogOfWar.activeSelf == true)
+				if (_actor.GetComponent<ActorBase>().currentTrOct.GetComponent<TruncOct>().inFow == true)
 				{
 					//be invisible
 					_actor.GetComponent<MeshRenderer>().enabled = false;
@@ -161,7 +161,7 @@ public class TeamManager : MonoBehaviour
 			foreach (GameObject _actor in teamA.members)
 			{
 				//if in the FOW
-				if (_actor.GetComponent<ActorBase>().currentTrOct.GetComponent<TruncOct>().fogOfWar.activeSelf == true)
+				if (_actor.GetComponent<ActorBase>().currentTrOct.GetComponent<TruncOct>().inFow == true)
 				{
 					//be invisible
 					_actor.GetComponent<MeshRenderer>().enabled = false;
@@ -207,8 +207,31 @@ public class TeamManager : MonoBehaviour
 		activeActors.Remove(_actor);
 	}
 
+	public List<ActorBase> GetTeam (int _team)
+	{
+		List<ActorBase> tempTeam = new List<ActorBase>();
+
+		if (_team == 0)
+		{
+			for (int i = 0; i < teamA.members.Count; i++)
+			{
+				tempTeam.Add(teamA.members[i].GetComponent<ActorBase>());
+			}	
+		}
+		else 
+		{
+			for (int i = 0; i < teamB.members.Count; i++)
+			{
+				tempTeam.Add(teamB.members[i].GetComponent<ActorBase>());
+			}	
+		}
+		return tempTeam;
+	}
+
+
+
 	/// <summary>
-	/// Clears the FOW for the team being switched to by going outwards from each face of the team member's current face and clearing 3 trocts.
+	/// Clears the FOW for the team being switched to by measuring the sight distance from each actor
 	/// </summary>
 	/// <param name="_team">_team.</param>
 	public void ClearFOW(int _team)
@@ -228,43 +251,20 @@ public class TeamManager : MonoBehaviour
 			{
 				if (Vector3.Distance(currentTeam.members[i].GetComponent<ActorBase>().currentTrOct.transform.position, _trOct.transform.position) <= fowDistance)
 				{
-					_trOct.GetComponent<TruncOct>().fogOfWar.SetActive(false);
+					//if controlled by AI, changing the fow object is not needed
+					if (currentTeam.controlType == Team.TeamType.AI)
+					{
+						_trOct.GetComponent<TruncOct> ().inFow = false;
+					}
+					else
+					{
+						_trOct.GetComponent<TruncOct> ().inFow = false;
+						_trOct.GetComponent<TruncOct> ().fogOfWar.SetActive (false);
+					}
 				}
 			}
-
-
-//			//go through each face of the current Troct and clear 3 trocts in each direction
-//			for (int j = 0; j < 14; j++)
-//			{
-//				TruncOct trOct = currentTeam.members[i].GetComponent<ActorBase>().currentTrOct.GetComponent<TruncOct>(),
-//				firstTrOct = GameManager.instance.allTrocts[trOct.connectionObjects[j]].GetComponent<TruncOct>();
-//
-//				trOct.fogOfWar.SetActive(false);
-//
-//				ClearTrOct(firstTrOct, j, 0);
-//			}
-
 		}
 	}
-
-	private void ClearTrOct(TruncOct _trOct, int _faceNo, int _numberCleared)
-	{
-		//clear the given troct and increment _numbercleared
-		_trOct.fogOfWar.SetActive(false);
-
-		_numberCleared++;
-
-		//if number cleared is now 3, return, else do the next troct in this direction
-		if (_numberCleared < 3)
-		{
-			TruncOct fedTrOct = GameManager.instance.allTrocts[_trOct.connectionObjects[_faceNo]].GetComponent<TruncOct>();
-
-			ClearTrOct(fedTrOct, _faceNo, _numberCleared);
-		}
-
-		return;		
-	}
-
 
 	/// <summary>
 	/// Spawns the teams in the world by choosing a face from either side of the starting troct and going outwards to the end.
@@ -337,9 +337,6 @@ public class TeamManager : MonoBehaviour
 
 		return false;
 	}
-		
-
-
 
 	/// <summary>
 	/// Links the trOct and the containing actor.

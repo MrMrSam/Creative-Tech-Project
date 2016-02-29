@@ -6,10 +6,21 @@
 using UnityEngine;
 using System.Collections;
 
-public class AIActor : MonoBehaviour
+public class AIActor : ActorBase
 {
+	GoapCore goapBrain;
 
-	enum TempStates {idle, path};
+	public ActorBase targetEnemy;
+
+	void Start ()
+	{
+		goapBrain = new GoapCore();
+
+		goapBrain.actor = this;
+	}
+
+	override protected void Tick()
+	{}
 
 
 }

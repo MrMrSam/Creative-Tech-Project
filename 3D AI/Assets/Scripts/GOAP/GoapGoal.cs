@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GoapGoal : MonoBehaviour
+public class GoapGoal
 {
 	public float baseWeight;
 
@@ -13,7 +13,7 @@ public class GoapGoal : MonoBehaviour
 	//The prerequisite that the goal wants to achieve.
 	public string initPrerequisite;
 
-	public void Init (GoapCore _core)
+	public virtual void Init (GoapCore _core)
 	{
 		core = _core;
 	}

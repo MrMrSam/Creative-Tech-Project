@@ -4,7 +4,7 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class GoapSensor : MonoBehaviour
+public abstract class GoapSensor
 {
 	protected GoapCore core;
 
@@ -13,5 +13,5 @@ public abstract class GoapSensor : MonoBehaviour
 		core = _core;
 	}
 
-	public abstract bool Action(GoapWorldstate _worldState);
+	public abstract bool Sense(GoapWorldstate _worldState);
 }

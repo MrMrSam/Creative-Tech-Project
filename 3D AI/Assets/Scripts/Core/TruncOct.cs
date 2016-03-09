@@ -80,6 +80,7 @@ public class TruncOct : MonoBehaviour
 		return false;
 	}
 
+
 	//once called by an external alteration, this will return the tile to its type config+colour
 	public void ReturnToTypeColour()
 	{

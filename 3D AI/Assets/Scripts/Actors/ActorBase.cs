@@ -20,12 +20,6 @@ public abstract class ActorBase : MonoBehaviour
 
 	void Start ()
 	{
-//		//if no startNode, set one
-//		if (!startNode)
-//		{
-//
-//		}
-
 		currentPath = new List<GameObject>();
 
 		currentFacing = FindFacing(currentTrOct);
@@ -184,18 +178,21 @@ public abstract class ActorBase : MonoBehaviour
 			GameObject newTrOct = GameManager.instance.allTrocts[currentTrOct.GetComponent<TruncOct>().connectionObjects[currentFacing]];
 
 			//see if it is clear
-			if (!newTrOct.GetComponent<TruncOct>().containedActor && newTrOct.GetComponent<TruncOct>().type != TruncOct.tileType.dead)
-			{
+			if (!newTrOct.GetComponent<TruncOct> ().containedActor && newTrOct.GetComponent<TruncOct> ().type != TruncOct.tileType.dead) {
 				currentTrOct = newTrOct;
 
-				currentTrOct.GetComponent<TruncOct>().containedActor = gameObject;
+				currentTrOct.GetComponent<TruncOct> ().containedActor = gameObject;
 
 				//set the new position to be the troct in facing direction
 				transform.position = currentTrOct.transform.position;
 
-				actionPoints --;
+				actionPoints--;
 
 				return true;
+			}
+			else
+			{
+				currentTrOct.GetComponent<TruncOct> ().containedActor = gameObject;
 			}
 		}
 		return false;

@@ -10,8 +10,29 @@ public class NewEnemies : GoapSensor
 	/// compare the fed worldstate to a newly generated one, if they have different enemy data, replan.
 	/// </summary>
 	/// <param name="_worldState">World state.</param>
-	public override bool Action(GoapWorldstate _worldState)
+	public override bool Sense(GoapWorldstate _worldState)
 	{
-		return false;
+		bool changeSensed = false;
+
+		GoapWorldstate oldState = _worldState,
+		newState = new GoapWorldstate();
+
+		//generate a new worldstate
+		newState.generateWorldState(core.actor);
+
+		//if the enemy data is different, the enemies have changed and a new plan should be forged
+		if (oldState.enemyData != newState.enemyData)
+		{
+			//drop the current target enemy
+			core.actor.targetEnemy = null;
+
+			changeSensed = true;
+		}
+
+		//push the new worldstate into the core
+		core.setWorldState(newState);
+
+		//return the verdict
+		return changeSensed;
 	}
 }

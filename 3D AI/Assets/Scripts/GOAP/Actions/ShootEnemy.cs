@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 public class ShootEnemy : GoapAction
 {
-	void Start ()
+	public override void Init (GoapCore _core)
 	{
 		actionName = "Shoot Enemy";
 		fulfillment = actionName;
 
 		prerequisites = new List<string>(2) {"Enemy Found", "Facing Enemy"};
+
+		core = _core;
 	}
 
 	public override bool Action(GoapWorldstate _worldState)

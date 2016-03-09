@@ -7,11 +7,13 @@ using System.Collections;
 public class Heal : GoapGoal 
 {
 
-	void start ()
+	public override void Init (GoapCore _core)
 	{
 		baseWeight = 0f;
 
 		initPrerequisite = "Heal";
+
+		base.Init(_core);
 	}
 
 	public override float calcWeight (GoapWorldstate _actorWorldState)

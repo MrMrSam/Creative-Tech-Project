@@ -8,15 +8,16 @@ using System.Collections;
 
 public class AIActor : ActorBase
 {
-	GoapCore goapBrain;
+	public GoapCore goapBrain;
 
 	public ActorBase targetEnemy;
 
 	void Start ()
 	{
-		goapBrain = new GoapCore();
+		targetEnemy = null;
 
-		goapBrain.actor = this;
+		goapBrain = new GoapCore();
+		goapBrain.Init(this);
 	}
 
 	override protected void Tick()

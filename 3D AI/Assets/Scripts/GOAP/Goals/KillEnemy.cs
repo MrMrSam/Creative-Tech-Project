@@ -5,11 +5,13 @@ using System.Collections.Generic;
 public class KillEnemy : GoapGoal
 {
 
-	void Start ()
+	public override void Init (GoapCore _core)
 	{
 		baseWeight = 0.5f;
 
 		initPrerequisite = "Shoot Enemy";
+
+		base.Init(_core);
 	}
 
 

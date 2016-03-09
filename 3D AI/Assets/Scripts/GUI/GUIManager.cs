@@ -24,10 +24,6 @@ public class GUIManager : MonoBehaviour
 		m_instance = this;
 	}
 
-	void Start ()
-	{
-	}
-
 	void Update ()
 	{
 		switch (GameManager.instance.GameState)
@@ -297,7 +293,7 @@ public class GUIManager : MonoBehaviour
 
 	public void ResetGame()
 	{
-		Application.LoadLevel("WorldGen");
+		UnityEngine.SceneManagement.SceneManager.LoadScene("WorldGen");
 	}
 
 	public void TempTeamAWin()

@@ -5,12 +5,14 @@ using System.Reflection;
 
 public class LineUpShot : GoapAction
 {
-	void Start ()
+	public override void Init (GoapCore _core)
 	{
 		actionName = "Line Up Shot";
-		fulfillment = "In line with enemy";
+		fulfillment = "In Line With Enemy";
 
-		prerequisites = new List<string>(1) {"Enemy Found"};
+		prerequisites = new List<string>(1) {"Enemy Targeted"};
+
+		core = _core;
 	}
 
 	public override bool Action(GoapWorldstate _worldState)
@@ -103,6 +105,11 @@ public class LineUpShot : GoapAction
 		TruncOct currentTroct = core.actor.currentTrOct.GetComponent<TruncOct>();
 
 		//are we already in line with the target?
+
+		if (!core.actor.targetEnemy)
+		{
+			return true;
+		}
 
 		//do any enemy directions line up with the current troct faces?
 		TruncOct enemyTroct = core.actor.targetEnemy.currentTrOct.GetComponent<TruncOct>();

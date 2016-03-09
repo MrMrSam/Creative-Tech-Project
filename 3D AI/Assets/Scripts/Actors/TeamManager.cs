@@ -17,12 +17,67 @@ public class TeamManager : MonoBehaviour
 	public static TeamManager instance { get { return m_instance; } }
 
 	public GameObject teamASpawn, teamBSpawn;
+
+	public TeamHolder teamAHolder, teamBHolder;
+
 	public float fowDistance = 10;
 
 	void Awake()
 	{
 		//instantiate singleton
 		m_instance = this;
+	}
+
+	private void Update ()
+	{
+		switch (GameManager.instance.GameState)
+		{
+		case GameStates.menu:
+			break;
+
+		case GameStates.debug:
+			break;
+
+		case GameStates.gameOver:
+			break;
+
+		case GameStates.gamepause:
+			break;
+
+		case GameStates.gameplay:
+			Tick();
+			break;
+		}
+	}
+
+
+	private void Tick()
+	{
+		Team turnTeam;
+
+		//if the current team is AI controlled, make each AI take a turn.
+		if (GameManager.instance.turnTeam == teamA.team)
+		{
+			//do it for team A
+			turnTeam = teamA;
+		}
+		else
+		{
+			//do it for team B
+			turnTeam = teamB;
+		}
+
+		//if this team is actually AI, make them take a turn each
+		if (turnTeam.controlType == Team.TeamType.AI)
+		{
+			foreach (GameObject _AIActorObject in turnTeam.members)
+			{
+				_AIActorObject.GetComponent<AIActor>().goapBrain.TakeTurn();
+			}
+
+			//once all have had their turn, end the team's turn
+			GameManager.instance.TurnEnd();
+		}
 	}
 
 	/// <summary>
@@ -69,42 +124,53 @@ public class TeamManager : MonoBehaviour
 			//j is the vessel within team i
 			for (int j = 0; j < _noOfVessels; j++)
 			{
+				//do the first team
 				if (i == 0)
 				{
 					//if this team is player controlled, make a player
 					if (teamA.controlType == Team.TeamType.PC)
 					{
-						GameObject newActor = transform.GetChild(i).GetChild(j).gameObject;
+						GameObject newActor = teamAHolder.teamPc[j].gameObject;
 						newActor.GetComponent<PlayerActor>().PlayerActorID = j;
 						newActor.GetComponent<PlayerActor>().Team = i;
 						newActor.SetActive(true);
 
 						activeActors.Add(newActor);
 						teamA.members.Add(newActor);
-
-						//transform.GetChild
 					}
 					else //make it an AI actor
 					{
+						GameObject newActor = teamAHolder.teamAi[j].gameObject;
+						newActor.GetComponent<AIActor> ().Team = i;
+						newActor.GetComponent<AIActor> ().actorName = "" + i + j;
+						newActor.SetActive(true);
+
+						activeActors.Add(newActor);
+						teamA.members.Add(newActor);
 					}
 				}
-				else
+				else //do team B
 				{
 					//if this team is player controlled, make a player
 					if (teamB.controlType == Team.TeamType.PC)
 					{
-						GameObject newActor = transform.GetChild(i).GetChild(j).gameObject;
-						newActor.GetComponent<PlayerActor>().PlayerActorID = j + (i * _noOfVessels);
+						GameObject newActor = teamBHolder.teamPc[j].gameObject;
+						newActor.GetComponent<PlayerActor>().PlayerActorID = j;
 						newActor.GetComponent<PlayerActor>().Team = i;
 						newActor.SetActive(true);
-						
+
 						activeActors.Add(newActor);
 						teamB.members.Add(newActor);
-
-						//transform.GetChild
 					}
 					else //make it an AI actor
 					{
+						GameObject newActor = teamBHolder.teamAi[j].gameObject;
+						newActor.GetComponent<AIActor>().Team = i;
+						newActor.GetComponent<AIActor> ().actorName = "" + i + j;
+						newActor.SetActive(true);
+
+						activeActors.Add(newActor);
+						teamB.members.Add(newActor);
 					}
 				}
 			}

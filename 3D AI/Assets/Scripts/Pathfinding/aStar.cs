@@ -54,9 +54,9 @@ public class aStar : MonoBehaviour
 	/// <param name="_searchSpace">The searchspace of the function.</param>
 	/// <param name="_start"> The start node if known, otherwise this is generated.</param>
 	/// <param name="_goal">The goal node if known, otherwise this is generated.</param>
-	private List<List<GameObject>> AStarSetup (List<GameObject> _searchSpace, GameObject _start, GameObject _goal)
+	private AStarData AStarSetup (List<GameObject> _searchSpace, GameObject _start, GameObject _goal)
 	{
-		List<List<GameObject>> aStarData = new List<List<GameObject>> ();
+		//List<List<GameObject>> aStarData = new List<List<GameObject>> ();
 
 		GameObject start, goal;
 		//if start is not provided, generate one
@@ -81,13 +81,6 @@ public class aStar : MonoBehaviour
 		//set start's cost so far to 0
 		start.GetComponent<TruncOct> ().nodeData.tentativeDist = 0;
 
-		//show start and end nodes as red
-		start.GetComponent<TruncOct> ().type = TruncOct.tileType.showEnds;
-		start.GetComponent<TruncOct> ().ReturnToTypeColour ();
-
-		goal.GetComponent<TruncOct> ().type = TruncOct.tileType.showEnds;
-		goal.GetComponent<TruncOct> ().ReturnToTypeColour ();
-
 		//setHeuristics
 		_searchSpace = SetHeuristics (_searchSpace, start, goal);
 
@@ -95,13 +88,23 @@ public class aStar : MonoBehaviour
 		List<GameObject> startHolder = new List<GameObject> (1) {start},
 		goalHolder = new List<GameObject> (1) {goal};
 
-		//pack data into aStarData
-		aStarData.Add (_searchSpace);
-		aStarData.Add (startHolder);
-		aStarData.Add (goalHolder);
 
-		return aStarData;
+		AStarData dataHolder = new AStarData ();
+
+		dataHolder.searchSpace = _searchSpace;
+		dataHolder.startObject = start;
+		dataHolder.goalObject = goal;
+//
+//
+//		//pack data into aStarData
+//		aStarData.Add (_searchSpace);
+//		aStarData.Add (startHolder);
+//		aStarData.Add (goalHolder);
+
+		return dataHolder;
 	}
+
+
 
 
 	/// <summary>
@@ -208,12 +211,13 @@ public class aStar : MonoBehaviour
 
 		startNodeNo = _start.GetComponent<TruncOct>().trOctNo;
 
-		List<List<GameObject>> AStardata = AStarSetup(GameManager.instance.allTrocts, _start, null);
+		//setup the world for Astart use
+		AStarData asData = AStarSetup(GameManager.instance.allTrocts, _start, null);
 
 		//unpack AstarData into thangs
-		List<GameObject> open, closed, searchSpace = AStardata [0];
-		start = AStardata [1] [0];
-		goal = AStardata [2] [0];
+		List<GameObject>  open, closed, searchSpace = asData.searchSpace;
+		start = asData.startObject;
+		goal = asData.goalObject;
 
 		//current node is the start
 		current = start;
@@ -225,9 +229,6 @@ public class aStar : MonoBehaviour
 		//actual pathfinding begins here
 		while (current != goal)
 		{
-			current.GetComponent<TruncOct> ().type = TruncOct.tileType.showSearch;
-			current.GetComponent<TruncOct> ().ReturnToTypeColour ();
-
 			//calculate the tentative distance between the current node and all of it's neighbors
 			//i goes through the connections of the current object
 			for (int i = 0; i < 14; i++) {
@@ -264,25 +265,18 @@ public class aStar : MonoBehaviour
 			}
 
 			//find the smallest tentative distance on the open list
-			float dist = float.MaxValue;
+			float dist = float.PositiveInfinity;
 
 			//i goes through each node in the open list to find the closest
 			for (int i = 0; i < open.Count; i++)
 			{
 				//if the tentative dist of the node is smaller than previous,
-				if (open [i].GetComponent<TruncOct>().nodeData.tentativeDist + open [i].GetComponent<TruncOct>().nodeData.heuristic < dist)
+				if ((open [i].GetComponent<TruncOct>().nodeData.tentativeDist + open [i].GetComponent<TruncOct>().nodeData.heuristic) < dist)
 				{
 					//it becomes the current node
 					current = open [i];
 					dist = open [i].GetComponent<TruncOct>().nodeData.tentativeDist;
 				}
-			}
-			
-			//mark current node as closed and remove from open list
-			if (current == start || current == goal)
-			{
-				current.GetComponent<TruncOct> ().type = TruncOct.tileType.showEnds;
-				current.GetComponent<TruncOct> ().ReturnToTypeColour ();
 			}
 			
 			open.Remove (current);
@@ -291,31 +285,25 @@ public class aStar : MonoBehaviour
 		}
 
 		path = new List<GameObject> ();
-		
-		//path.Add (goalNode);
 
-		//add all other nodes too
-		path = CompilePath (start, goal, closed);
-		
-		DisplayPath (goal, start);
-		RemoveSearchSpace (closed, false);
+		path.AddRange (closed);
 
 		return path;
 	}
 
-	List<GameObject> CompilePath(GameObject _start, GameObject _node, List<GameObject> _list)
-	{
-		_list.Add (_node);
-
-		//if not at the end of the path
-		if (_node != _start)
-		{
-			//recurse
-			_list.AddRange(CompilePath (_start, _node.GetComponent<TruncOct> ().nodeData.tentDistNode.gameObject, _list));
-		}
-		//else return
-		return _list;
-	}
+//	List<GameObject> CompilePath(GameObject _start, GameObject _goal, List<GameObject> _list)
+//	{
+//		_list.Add (_node);
+//
+//		//if not at the end of the path
+//		if (_node != _start)
+//		{
+//			//recurse
+//			_list.AddRange(CompilePath (_start, _node.GetComponent<TruncOct> ().nodeData.tentDistNode.gameObject, _list));
+//		}
+//		//else return
+//		return _list;
+//	}
 
 	//takes the goal node's tentDistNode and moves backwards through them to the start node changing colour to display the path
 	void DisplayPath(GameObject _dispNode, GameObject _start)
@@ -393,4 +381,11 @@ public class aStar : MonoBehaviour
 			}
 		}
 	}
+}
+
+public struct AStarData
+{
+	public List<GameObject> searchSpace;
+	public GameObject startObject,
+	goalObject;
 }

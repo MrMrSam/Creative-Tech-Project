@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-public abstract class GoapAction : MonoBehaviour
+public abstract class GoapAction
 {
 	public List<string> prerequisites;
 
@@ -17,10 +17,7 @@ public abstract class GoapAction : MonoBehaviour
 
 	public abstract bool Test(GoapWorldstate _worldState);
 
-	public void Init (GoapCore _core)
-	{
-		core = _core;
-	}
+	public abstract void Init (GoapCore _core);
 
 
 	/// <summary>

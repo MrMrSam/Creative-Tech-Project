@@ -6,10 +6,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GoapCore : MonoBehaviour
+public class GoapCore
 {
 	//all goals this actor has
 	private List<GoapGoal> goals;
+
+	private List<GoapSensor> sensors;
 
 	public AIActor actor;
 
@@ -30,9 +32,15 @@ public class GoapCore : MonoBehaviour
 	{
 		return worldState;
 	}
-
-	void Start ()
+	public void setWorldState(GoapWorldstate _worldState)
 	{
+		worldState = _worldState;
+	}
+
+	public void Init (AIActor _actor)
+	{
+		actor = _actor;
+
 		//initialise goals
 		goals = new List<GoapGoal> ();
 		goals.Add (new KillEnemy ());
@@ -48,6 +56,7 @@ public class GoapCore : MonoBehaviour
 		actionPool.Add (new FindEnemy ());
 		actionPool.Add (new LineUpShot ());
 		actionPool.Add (new ShootEnemy ());
+		actionPool.Add (new TargetEnemy ());
 		foreach (GoapAction _action in actionPool)
 		{
 			_action.Init(this);
@@ -59,12 +68,12 @@ public class GoapCore : MonoBehaviour
 
 		obstructionSensor = new BlockedPath ();
 		obstructionSensor.Init (this);
-
-
-
+		sensors = new List<GoapSensor>();
+		sensors.Add(obstructionSensor);
+		sensors.Add(enemySensor);
 	}
 
-	public void Tick ()
+	public void TakeTurn ()
 	{
 		worldState = UpdateWorldstate();
 
@@ -79,14 +88,18 @@ public class GoapCore : MonoBehaviour
 			currentPlan = FormulatePlan(currentGoal, worldState);
 		}
 
-		currentPlan = ExecutePlan (currentPlan, worldState);
+		//loop the plan execution until all 
+		while (actor.actionPoints > 0)
+		{
+			//process and execute the plan, setting it to be the new plan
+			currentPlan = ExecutePlan (currentPlan, worldState);
+		}
 	}
 
 
 	private GoapPlan ExecutePlan(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
-		bool sensorInterruption = false,
-		actionSuccess = true;
+		bool actionSuccess = true;
 
 		//try to carry out the plan until an action attempt fails (or sensors interrupt)
 		while (actionSuccess == true)
@@ -94,12 +107,28 @@ public class GoapCore : MonoBehaviour
 			//if the action on the top of the stack needs to be done
 			if (_currentPlan.actionOrder.Peek ().Test (_worldState))
 			{
+				//run sensors
+				GoapPlan tempPlan = CheckSensors(_currentPlan, _worldState);
+
+				//if the plans differ
+				if (!ComparePlans(_currentPlan, tempPlan))
+				{
+					return tempPlan;
+				}
+
 				//try to carry it out and have it set the result of actionSuccess depending on a success or failure
 				actionSuccess = _currentPlan.actionOrder.Peek().Action(_worldState);
 
 				if (actionSuccess) //if an action was successfully done, call the sensors to check things
 				{
-					_currentPlan = CheckSensors (_currentPlan, getworldState ());
+					_currentPlan.actionOrder.Pop ();
+
+					tempPlan = CheckSensors (_currentPlan, getworldState ());
+
+					if (!ComparePlans(_currentPlan, tempPlan))
+					{
+						return tempPlan;
+					}
 				}
 			}
 			else//remove it from the plan, as it doesnt need to be carried out
@@ -119,14 +148,50 @@ public class GoapCore : MonoBehaviour
 	/// <param name="">.</param>
 	private GoapPlan CheckSensors (GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
-		//loop through sensors
 
-
-		return null;
-
+		foreach (GoapSensor _sensor in sensors)
+		{
+			//if a replan is needed according to the current sensor
+			if (_sensor.Sense(_worldState))
+			{
+				//resort goals, and from this formulate a new plan
+				return FormulatePlan(SortGoals(_worldState), _worldState);
+			}
+		}
 		//if all is fine, return the plan back as it was, it is fine.
 		return _currentPlan;
 	}
+
+	/// <summary>
+	/// Compares to see if plans are equal from their planning data (as the reference to the core will always flag them as different otherwise).
+	/// </summary>
+	/// <returns><c>true</c>, if plans are the same <c>false</c> otherwise.</returns>
+	/// <param name="_planA">Plan a.</param>
+	/// <param name="_planB">Plan b.</param>
+	private bool ComparePlans(GoapPlan _planA, GoapPlan _planB)
+	{
+		//if the goals differ
+		if (_planA.goalBeingFulfilled != _planB.goalBeingFulfilled)
+		{
+			//return stating this difference
+			return false;
+		}
+
+		GoapAction[] tempA = _planA.actionOrder.ToArray(),
+		tempB = _planB.actionOrder.ToArray();
+
+		for (int i = 0; i < tempA.Length; i++)
+		{
+			if (tempA[i] != tempB[i])
+			{
+				return false;
+			}
+		}
+
+		//else they must be the same
+		return true;
+	}
+
 
 	/// <summary>
 	/// Formulates a plan from the given goal and current actor state.
@@ -134,7 +199,7 @@ public class GoapCore : MonoBehaviour
 	/// <returns>The plan.</returns>
 	/// <param name="_goal">Goal.</param>
 	/// <param name="_worldstate">Worldstate.</param>
-	GoapPlan FormulatePlan (GoapGoal _goal, GoapWorldstate _worldstate)
+	private GoapPlan FormulatePlan (GoapGoal _goal, GoapWorldstate _worldstate)
 	{
 		GoapPlan newPlan = new GoapPlan();
 
@@ -155,36 +220,43 @@ public class GoapCore : MonoBehaviour
 			}
 		}
 
-		//loop through all action fulfillments and finds one to fulfill the last action pushed to the stack
-		List<String> actionsRequired = newPlan.actionOrder.Peek().prerequisites,
-		actionsFulfilled = new List<string>();
+		List<string> prerequisites = newPlan.actionOrder.Peek ().prerequisites;
 
-		//while there are still prerequisites that need to be accounted for:
-		while (!CompareRequiredAndFulfilled(actionsRequired, actionsFulfilled))
+		newPlan.actionOrder = FulfillPrereqs (newPlan.actionOrder, prerequisites, _worldstate);
+
+		return newPlan;
+	}
+
+
+	private Stack<GoapAction> FulfillPrereqs (Stack<GoapAction> _currentActionList, List<string> _currentPrerequisites, GoapWorldstate _worldstate)
+	{
+		foreach (string _prereq in _currentPrerequisites)
 		{
-			//find the action to fulfill the first action encountered wich does not have a fulfillment
-			foreach (string _prereq in actionsRequired)
+			//find the item to fulfill the current prereq
+			foreach (GoapAction _action in actionPool)
 			{
-				if (!actionsFulfilled.Contains (_prereq))
+				if (_action.fulfillment == _prereq)
 				{
-					//find an action that fulfills this from the pool and add it to the stack
-					foreach (GoapAction _action in actionPool)
+					//if the action does not need to be done, no more need to be added, so just return the actionlist as is
+					if (!_action.Test (_worldstate))
 					{
-						if (_action.fulfillment == _prereq)
-						{
-							newPlan.actionOrder.Push (_action);
+						return _currentActionList;
+					}
+					else
+					{
+						_currentActionList.Push (_action);
 
-							//add the prereqs + fulfillments of this action to the lists respectively
-							actionsRequired.AddRange(_action.prerequisites);
-							actionsFulfilled.Add (_action.fulfillment);
-						}
+						List<string> prereqs = _action.prerequisites;
+
+						_currentActionList = FulfillPrereqs (_currentActionList, prereqs, _worldstate);
 					}
 				}
 			}
 		}
 
-		return newPlan;
+		return _currentActionList;
 	}
+
 
 	/// <summary>
 	/// Compares the required and fulfilled lists added, seeing if they match up.
@@ -246,7 +318,7 @@ public class GoapCore : MonoBehaviour
 
 		newWorldState.generateWorldState (actor);
 
-		return worldState;
+		return newWorldState;
 	}
 
 }

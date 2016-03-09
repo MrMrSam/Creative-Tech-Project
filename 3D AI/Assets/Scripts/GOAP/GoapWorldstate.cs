@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GoapWorldstate : MonoBehaviour 
+public class GoapWorldstate
 {
 	//the actual world/map info
 	public List<GameObject> topology;
@@ -21,6 +21,7 @@ public class GoapWorldstate : MonoBehaviour
 	//the facing of the actor
 	public int selfFacing;
 
+	//alters the calling worldstate to be updated according to it's actor
 	public void generateWorldState (AIActor _goapActor)
 	{
 		//fetch the troct info from the game manager

@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
 	public int noOfVessels = 1;
 
+	//the current team
 	public int turnTeam;
 
     private GameStates m_GameState;
@@ -41,7 +42,7 @@ public class GameManager : MonoBehaviour
     }
 
 	/// <summary>
-	/// Pushes the game into the next the turn.
+	/// Pushes the game into the next turn.
 	/// </summary>
 	public void TurnEnd()
 	{
@@ -57,7 +58,7 @@ public class GameManager : MonoBehaviour
 
 		ResetFOW();
 
-		//switch selection's target to be the first team member
+		//switch selection's target to be the first team member if the team is not AI
 		TeamManager.instance.SwitchTeams(turnTeam);
 
 		GUIManager.instance.TeamChange(turnTeam);
@@ -118,11 +119,4 @@ public class GameManager : MonoBehaviour
 		GameState = GameStates.gameOver;
 
 	}
-
-
-
-//    void Start()
-//    {
-//		allTrocts = WorldGen.instance.GenWorld (genDistance);
-//	}
 }

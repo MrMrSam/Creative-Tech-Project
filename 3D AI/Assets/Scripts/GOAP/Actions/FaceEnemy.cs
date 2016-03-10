@@ -15,7 +15,7 @@ public class FaceEnemy : GoapAction
 		core = _core;
 	}
 
-	public override bool Action(GoapWorldstate _worldState)
+	public override bool Action(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
 		//try to rotate towards the target enemy
 		return core.actor.TryRotate(core.actor.targetEnemy.transform);

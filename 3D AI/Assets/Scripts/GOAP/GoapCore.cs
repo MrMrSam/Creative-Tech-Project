@@ -94,6 +94,8 @@ public class GoapCore
 			//process and execute the plan, setting it to be the new plan
 			currentPlan = ExecutePlan (currentPlan, worldState);
 		}
+
+		return;
 	}
 
 
@@ -102,7 +104,7 @@ public class GoapCore
 		bool actionSuccess = true;
 
 		//try to carry out the plan until an action attempt fails (or sensors interrupt)
-		while (actionSuccess == true)
+		while (actor.actionPoints > 0)
 		{
 			//if the action on the top of the stack needs to be done
 			if (_currentPlan.actionOrder.Peek ().Test (_worldState))
@@ -117,13 +119,19 @@ public class GoapCore
 				}
 
 				//try to carry it out and have it set the result of actionSuccess depending on a success or failure
-				actionSuccess = _currentPlan.actionOrder.Peek().Action(_worldState);
+				actionSuccess = _currentPlan.actionOrder.Peek().Action(_currentPlan, _worldState);
 
-				if (actionSuccess) //if an action was successfully done, call the sensors to check things
+				if (actionSuccess) //if an action was successfully done,check if it will need to be continued (with a new worldstate)
 				{
-					_currentPlan.actionOrder.Pop ();
+					_worldState.generateWorldState (actor);
 
-					tempPlan = CheckSensors (_currentPlan, getworldState ());
+					//if the action no longer needs to be done, pop it from the stack
+					if (!_currentPlan.actionOrder.Peek ().Test (_worldState))
+					{
+						_currentPlan.actionOrder.Pop ();
+					}
+
+					tempPlan = CheckSensors (_currentPlan, getworldState ()); //call sensors as a precaution
 
 					if (!ComparePlans(_currentPlan, tempPlan))
 					{
@@ -152,7 +160,7 @@ public class GoapCore
 		foreach (GoapSensor _sensor in sensors)
 		{
 			//if a replan is needed according to the current sensor
-			if (_sensor.Sense(_worldState))
+			if (_sensor.Sense(_currentPlan, _worldState))
 			{
 				//resort goals, and from this formulate a new plan
 				return FormulatePlan(SortGoals(_worldState), _worldState);
@@ -324,9 +332,21 @@ public class GoapCore
 }
 
 /// Goap plans hold the formulated plan of the GOAP system.
-class GoapPlan
+public class GoapPlan
 {
 	public Stack<GoapAction> actionOrder;
 
+	public List<GameObject> plannedPath = null;
+
 	public GoapGoal goalBeingFulfilled;
+
+	/// <summary>
+	/// Plots an A* route by calling the central A* plotter
+	/// </summary>
+	public /*List<GameObject>*/void plotRoute(AIActor _actor, GameObject _start, GameObject _goal)
+	{
+		plannedPath = GameManager.instance.GetComponent<aStar> ().GeneratePath (_actor.currentTrOct, _goal);
+
+		//return route;
+	}
 }

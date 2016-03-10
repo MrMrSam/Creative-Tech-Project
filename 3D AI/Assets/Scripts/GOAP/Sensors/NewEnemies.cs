@@ -10,7 +10,7 @@ public class NewEnemies : GoapSensor
 	/// compare the fed worldstate to a newly generated one, if they have different enemy data, replan.
 	/// </summary>
 	/// <param name="_worldState">World state.</param>
-	public override bool Sense(GoapWorldstate _worldState)
+	public override bool Sense(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
 		bool changeSensed = false;
 

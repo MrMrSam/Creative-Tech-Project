@@ -16,10 +16,12 @@ public class FindEnemy : GoapAction
 		core = _core;
 	}
 
-	public override bool Action(GoapWorldstate _worldState)
+	public override bool Action(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
+		GameObject goalNode = null;
+
 		//if there is not currently a path, plot a course towards a random undiscovered area
-		if (core.actor.currentPath.Count == 0)
+		if (_currentPlan.plannedPath == null)
 		{
 			//compile a list of all trocts concealed by the fow
 			List<GameObject> undiscoveredTrocts = new List<GameObject>();
@@ -49,16 +51,16 @@ public class FindEnemy : GoapAction
 					biggestDistance = totalDistance;
 
 					//this will be the goal TrOct
-					core.actor.goalNode = furthestTroct;
+					goalNode = furthestTroct;
 				}
 			}
 
-			//plot a route using the central A* plotter
-			core.actor.plotRoute();
+			//plot a route using the central A* plotter through the current plan
+			_currentPlan.plotRoute(core.actor, core.actor.currentTrOct, goalNode);
 		}
 
 		// attempt to follow the path that was either preexisting or was just generated
-		return ProceedAlongPath();
+		return ProceedAlongPath(_currentPlan);
 	}
 
 

@@ -15,7 +15,7 @@ public class TargetEnemy : GoapAction
 		core = _core;
 	}
 
-	public override bool Action(GoapWorldstate _worldState)
+	public override bool Action(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
 		//target a visible enemy
 

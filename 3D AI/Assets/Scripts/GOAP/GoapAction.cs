@@ -13,7 +13,7 @@ public abstract class GoapAction
 	fulfillment, 				//the prerequisites this will fulfill
 	calls; 						//the base function that is used to change the worldstate
 
-	public abstract bool Action(GoapWorldstate _worldState);
+	public abstract bool Action(GoapPlan _currentPlan, GoapWorldstate _worldState);
 
 	public abstract bool Test(GoapWorldstate _worldState);
 
@@ -24,13 +24,10 @@ public abstract class GoapAction
 	/// Proceeds the along path.
 	/// </summary>
 	/// <returns><c>true</c>, if progress along the path was made, <c>false</c> otherwise.</returns>
-	protected bool ProceedAlongPath()
+	protected bool ProceedAlongPath(GoapPlan _currentPlan)
 	{
-		//make a copy of the current path
-		List<GameObject> path = core.actor.currentPath;
-
 		//find the next GO on the currentPath
-		GameObject targetTroct = path[core.actor.progressAlongPath + 1];
+		GameObject targetTroct = _currentPlan.plannedPath[0];
 
 		Vector3 towardsTarget = (targetTroct.transform.position - core.actor.currentTrOct.transform.position).normalized;
 
@@ -40,11 +37,12 @@ public abstract class GoapAction
 			//if so, try move forwards
 			if (core.actor.TryMoveForwards())
 			{
-				core.actor.progressAlongPath ++;
+				_currentPlan.plannedPath.RemoveAt(0);
+
 				//see if the target node has been reached
-				if (core.actor.currentTrOct == core.actor.goalNode)
+				if (_currentPlan.plannedPath.Count == 0)
 				{
-					core.actor.currentPath.Clear();
+					_currentPlan.plannedPath = null;
 				}
 
 				return true; //return a successful progression along the path

@@ -15,10 +15,12 @@ public class LineUpShot : GoapAction
 		core = _core;
 	}
 
-	public override bool Action(GoapWorldstate _worldState)
+	public override bool Action(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
+		GameObject goalNode = null;
+
 		//if the path has not already been made
-		if (core.actor.currentPath.Count == 0)
+		if (_currentPlan.plannedPath == null)
 		{
 			TruncOct enemyTroct= core.actor.targetEnemy.currentTrOct.GetComponent<TruncOct>();
 
@@ -57,16 +59,16 @@ public class LineUpShot : GoapAction
 					closestDistance = tempDist;
 					closestTroct = inLineTrocts[i];
 
-					core.actor.goalNode = closestTroct.gameObject;
+					goalNode = closestTroct.gameObject;
 				}
 			}
 		
 			//now plot a route to A* pathfind to
-			core.actor.plotRoute();
+			_currentPlan.plotRoute(core.actor, core.actor.currentTrOct, goalNode);
 		}
 
 		//try to follow the A* path
-		return ProceedAlongPath();
+		return ProceedAlongPath(_currentPlan);
 	}
 
 	private List<TruncOct> TroctsInDirection(List<TruncOct> _troctsInLine, int _facing, TruncOct _rootTroct, GoapWorldstate _worldState)

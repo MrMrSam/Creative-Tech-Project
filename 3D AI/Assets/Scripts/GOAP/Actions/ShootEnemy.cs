@@ -14,7 +14,7 @@ public class ShootEnemy : GoapAction
 		core = _core;
 	}
 
-	public override bool Action(GoapWorldstate _worldState)
+	public override bool Action(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
 		//SHOOT FORWARDS
 		return core.actor.Shootforwards();

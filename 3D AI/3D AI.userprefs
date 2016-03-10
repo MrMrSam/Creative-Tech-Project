@@ -1,34 +1,26 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Actors\ActorBase.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Actors\AIActor.cs">
     <Files>
-      <File FileName="Assets\Scripts\GOAP\GoapCore.cs" Line="122" Column="1" />
-      <File FileName="Assets\Scripts\Core\GameManager.cs" Line="78" Column="24" />
-      <File FileName="Assets\Scripts\Actors\TeamManager.cs" Line="169" Column="64" />
-      <File FileName="Assets\Scripts\GOAP\Actions\FaceEnemy.cs" Line="31" Column="14" />
-      <File FileName="Assets\Scripts\GOAP\Actions\FindEnemy.cs" Line="61" Column="1" />
+      <File FileName="Assets\Scripts\GOAP\GoapCore.cs" Line="46" Column="11" />
+      <File FileName="Assets\Scripts\Actors\ActorBase.cs" Line="174" Column="1" />
+      <File FileName="Assets\Scripts\Pathfinding\aStar.cs" Line="295" Column="161" />
       <File FileName="Assets\Scripts\Actors\AIActor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GOAP\Actions\LineUpShot.cs" Line="111" Column="16" />
-      <File FileName="Assets\Scripts\GOAP\Actions\TargetEnemy.cs" Line="52" Column="4" />
-      <File FileName="Assets\Scripts\GOAP\Sensors\NewEnemies.cs" Line="24" Column="1" />
-      <File FileName="Assets\Scripts\GOAP\GoapWorldstate.cs" Line="31" Column="31" />
-      <File FileName="Assets\Scripts\Actors\ActorBase.cs" Line="43" Column="1" />
-      <File FileName="Assets\Scripts\Pathfinding\aStar.cs" Line="289" Column="26" />
-      <File FileName="Assets\Scripts\GUI\GUIManager.cs" Line="29" Column="1" />
-      <File FileName="Assets\Scripts\GOAP\GoapAction.cs" Line="41" Column="1" />
+      <File FileName="Assets\Scripts\Actors\TeamManager.cs" Line="188" Column="18" />
+      <File FileName="Assets\Scripts\Core\GameManager.cs" Line="62" Column="30" />
+      <File FileName="Assets\Scripts\GOAP\GoapAction.cs" Line="57" Column="1" />
     </Files>
+    <Pads>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\Actors\ActorBase.cs" line="178" column="1" />
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\Actors\ActorBase.cs" line="191" column="1" />
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\Actors\ActorBase.cs" line="198" column="1" />
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\GOAP\GoapAction.cs" line="35" column="1" />
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\Actors\ActorBase.cs" line="34" column="1" />
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\Actors\ActorBase.cs" line="42" column="1" />
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\Actors\ActorBase.cs" line="51" column="1" />
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\Actors\ActorBase.cs" line="49" column="1" />
-      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\Actors\ActorBase.cs" line="45" column="1" />
+      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\GOAP\GoapCore.cs" line="118" column="1" />
+      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\GOAP\Actions\FaceEnemy.cs" line="21" column="21" />
+      <Breakpoint file="F:\Work\UNI WORK 2016\Creative-Tech-Project\3D AI\Assets\Scripts\GOAP\GoapCore.cs" line="98" column="10" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

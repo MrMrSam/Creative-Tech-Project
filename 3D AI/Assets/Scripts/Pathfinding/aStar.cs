@@ -222,8 +222,14 @@ public class aStar : MonoBehaviour
 		//current node is the start
 		current = start;
 
+		open = new List<GameObject> ();
+
+		for (int i = 0; i < searchSpace.Count; i++)
+		{
+			open.Add (searchSpace [i]);
+		}
+
 		//before pathfinding occurs, all nodes are still open
-		open = searchSpace;
 		closed = new List<GameObject> ();
 
 		//actual pathfinding begins here
@@ -278,13 +284,15 @@ public class aStar : MonoBehaviour
 					dist = open [i].GetComponent<TruncOct>().nodeData.tentativeDist;
 				}
 			}
-			
+
 			open.Remove (current);
 			closed.Add (current);
 
 		}
 
 		path = new List<GameObject> ();
+
+		closed.RemoveAt (0);//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		path.AddRange (closed);
 

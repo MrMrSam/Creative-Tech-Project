@@ -6,12 +6,11 @@ public abstract class ActorBase : MonoBehaviour
 {
 	#region Public Members
 	public string actorName;
-	public List<GameObject> m_projectiles = new List<GameObject>(), currentPath;
+	public List<GameObject> m_projectiles = new List<GameObject>();
 	public float health = 10.0f,
 	viewDistance;
-	public int progressAlongPath = 0;
 	public int currentFacing = -1, Team, actionPoints = 3;
-	public GameObject Torpedo, startNode, goalNode, currentTrOct;
+	public GameObject Torpedo, startNode, currentTrOct;
 	#endregion
 
 	#region Protected Members
@@ -20,12 +19,9 @@ public abstract class ActorBase : MonoBehaviour
 
 	void Start ()
 	{
-		currentPath = new List<GameObject>();
-
 		currentFacing = FindFacing(currentTrOct);
 
 		viewDistance = TeamManager.instance.fowDistance;
-
 	}
 	
 	// Update is called once per frame
@@ -174,8 +170,10 @@ public abstract class ActorBase : MonoBehaviour
 			//reset currentTroct's contained actor
 			currentTrOct.GetComponent<TruncOct>().containedActor = null;
 
-			//find the troct being faced
-			GameObject newTrOct = GameManager.instance.allTrocts[currentTrOct.GetComponent<TruncOct>().connectionObjects[currentFacing]];
+//			//find the troct being faced
+			int troctNo = currentTrOct.GetComponent<TruncOct>().connectionObjects[currentFacing];
+
+			GameObject newTrOct = GameManager.instance.allTrocts[troctNo];
 
 			//see if it is clear
 			if (!newTrOct.GetComponent<TruncOct> ().containedActor && newTrOct.GetComponent<TruncOct> ().type != TruncOct.tileType.dead) {
@@ -228,17 +226,5 @@ public abstract class ActorBase : MonoBehaviour
 
 		//tell the AI system that the actor could not move at this time.
 		return false;
-	}
-
-	/// <summary>
-	/// Plots an A* route by calling the central A* plotter
-	/// </summary>
-	public void plotRoute()
-	{
-		List<GameObject> route = GameManager.instance.GetComponent<aStar> ().GeneratePath (currentTrOct, goalNode);
-
-		progressAlongPath = 0;
-
-		currentPath = route;
 	}
 }

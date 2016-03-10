@@ -13,5 +13,5 @@ public abstract class GoapSensor
 		core = _core;
 	}
 
-	public abstract bool Sense(GoapWorldstate _worldState);
+	public abstract bool Sense(GoapPlan _currentPlan, GoapWorldstate _worldState);
 }

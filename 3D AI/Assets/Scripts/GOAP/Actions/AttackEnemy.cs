@@ -20,7 +20,7 @@ public class AttackEnemy : GoapAction
 	}
 
 
-	public override bool Action(GoapWorldstate _worldState)
+	public override bool Action(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
 		return false;
 	}

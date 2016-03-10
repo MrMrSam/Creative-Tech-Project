@@ -173,7 +173,7 @@ public class Selection : MonoBehaviour
 				else if (selectState == SelectionState.PlanRoute)
 				{
 					//feed the player the goalnode
-					selectedActor.GetComponent<PlayerActor>().goalNode = troctHit;
+					//selectedActor.GetComponent<PlayerActor>().goalNode = troctHit;
 
 					//create a tentative path for display
 					tentPath = GameManager.instance.GetComponent<aStar>().GeneratePath(selectedActor.GetComponent<PlayerActor>().currentTrOct, troctHit);
@@ -239,7 +239,7 @@ public class Selection : MonoBehaviour
 			}
 			break;
 		case SelectionState.PlanRoute:
-			selectedActor.GetComponent<ActorBase>().currentPath = tentPath;
+			//selectedActor.GetComponent<ActorBase>().currentPath = tentPath;
 			break;
 		default: //if not planning route or rotating, just select the troct as normal
 

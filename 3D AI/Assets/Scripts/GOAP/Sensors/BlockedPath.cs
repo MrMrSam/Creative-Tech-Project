@@ -11,19 +11,28 @@ public class BlockedPath : GoapSensor
 	/// If the actor is facing the next troct on the path and the path is obstructed and the current actor has action points left, replan
 	/// </summary>
 	/// <param name="_worldState">World state.</param>
-	public override bool Sense(GoapWorldstate _worldState)
+	public override bool Sense(GoapPlan _currentPlan, GoapWorldstate _worldState)
 	{
+
 		//make a copy of the current path
-		List<GameObject> path = core.actor.currentPath;
+		List<GameObject> path = _currentPlan.plannedPath;
 
 		//if the path is empty or we are at the end of the path, return false as no replanning has to be done as a result of the sensed state
-		if (path.Count == 0 || core.actor.progressAlongPath == path.Count)
+		if (_currentPlan.plannedPath == null)
 		{
 			return false;
 		}
+		else
+		{
+			if (_currentPlan.plannedPath [0] == core.actor.currentTrOct)
+			{
+				_currentPlan.plannedPath.RemoveAt (0);
+			}
+		}
+
 
 		//find the next GO on the currentPath
-		GameObject targetTroct = path[core.actor.progressAlongPath + 1];
+		GameObject targetTroct = path[0];
 
 		Vector3 towardsTarget = (targetTroct.transform.position - core.actor.currentTrOct.transform.position).normalized;
 

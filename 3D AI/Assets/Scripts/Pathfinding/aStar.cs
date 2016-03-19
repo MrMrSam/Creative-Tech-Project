@@ -94,12 +94,6 @@ public class aStar : MonoBehaviour
 		dataHolder.searchSpace = _searchSpace;
 		dataHolder.startObject = start;
 		dataHolder.goalObject = goal;
-//
-//
-//		//pack data into aStarData
-//		aStarData.Add (_searchSpace);
-//		aStarData.Add (startHolder);
-//		aStarData.Add (goalHolder);
 
 		return dataHolder;
 	}
@@ -121,6 +115,9 @@ public class aStar : MonoBehaviour
 			if (_searchSpace[i] != _start)
 			{
 				int steps;
+
+				//reset the tentative distance of the node data of the nodes
+				_searchSpace[i].GetComponent<TruncOct>().nodeData.tentativeDist = float.PositiveInfinity;
 				
 				switch (HeuristicType)
 				{
@@ -200,7 +197,7 @@ public class aStar : MonoBehaviour
 		GameObject start = _start, goal, current;
 
 		//if a goal was supplied, set it as the goal, otherwise generate a random one
-		if (_goal)
+		if (_goal != null)
 		{
 			goal = _goal;
 		}
@@ -292,48 +289,46 @@ public class aStar : MonoBehaviour
 
 		path = new List<GameObject> ();
 
-		closed.RemoveAt (0);//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		path.AddRange (closed);
+		path = CompilePath(start, goal, path);
 
 		return path;
 	}
 
-//	List<GameObject> CompilePath(GameObject _start, GameObject _goal, List<GameObject> _list)
-//	{
-//		_list.Add (_node);
-//
-//		//if not at the end of the path
-//		if (_node != _start)
-//		{
-//			//recurse
-//			_list.AddRange(CompilePath (_start, _node.GetComponent<TruncOct> ().nodeData.tentDistNode.gameObject, _list));
-//		}
-//		//else return
-//		return _list;
-//	}
-
-	//takes the goal node's tentDistNode and moves backwards through them to the start node changing colour to display the path
-	void DisplayPath(GameObject _dispNode, GameObject _start)
+	List<GameObject> CompilePath(GameObject _start, GameObject _currentNode, List<GameObject> _list)
 	{
-		GameObject newNode = _dispNode.GetComponent<TruncOct>().nodeData.tentDistNode.gameObject;
-		
-		path.Insert(0, newNode);
-		
-		//if the new node is not the start node
-		if (newNode != _start)
+		_list.Insert (0, _currentNode);
+
+		//if not at the end of the path
+		if (_currentNode != _start)
 		{
-			newNode.GetComponent<TruncOct>().type = TruncOct.tileType.showPath;
-			newNode.GetComponent<TruncOct>().ReturnToTypeColour();
-			
-			//calls the function for said node
-			DisplayPath(newNode, _start);
+			//recurse
+			_list = (CompilePath (_start, _currentNode.GetComponent<TruncOct> ().nodeData.tentDistNode.gameObject, _list));
 		}
+		//else return
+		return _list;
 	}
 
-	/// <summary>
-	/// Faces the next TrOct on the path, called by AIActors
-	/// </summary>
+//	//takes the goal node's tentDistNode and moves backwards through them to the start node changing colour to display the path
+//	void DisplayPath(GameObject _dispNode, GameObject _start)
+//	{
+//		GameObject newNode = _dispNode.GetComponent<TruncOct>().nodeData.tentDistNode.gameObject;
+//		
+//		path.Insert(0, newNode);
+//		
+//		//if the new node is not the start node
+//		if (newNode != _start)
+//		{
+//			newNode.GetComponent<TruncOct>().type = TruncOct.tileType.showPath;
+//			newNode.GetComponent<TruncOct>().ReturnToTypeColour();
+//			
+//			//calls the function for said node
+//			DisplayPath(newNode, _start);
+//		}
+//	}
+//
+//	/// <summary>
+//	/// Faces the next TrOct on the path, called by AIActors
+//	/// </summary>
 	/// <returns>The number of action points used</returns>
 	/// <param name="_path">the complete path being followed</param>
 	void faceNextPath(List<GameObject> _path, int _pathPos)

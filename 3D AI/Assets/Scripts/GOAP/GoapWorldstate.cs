@@ -88,6 +88,43 @@ public class GoapWorldstate
 		return _enemies;
 	}
 
+	/// <summary>
+	/// Compares the presence of the actor's team compared to the enemy team.
+	/// </summary>
+	/// <returns>The relative presence.</returns>
+	public float ComparePresence(ActorBase _actor)
+	{
+		//if there are no enemies
+		if (enemyData.Count == 0)
+		{
+			return 1;
+		}
+
+		//take own health proportion
+		float ally = _actor.health / _actor.maxHealth;
+		float enemy = 0f;
+
+		//take ally health proportion / distance
+		foreach (ActorBase _ally in allies)
+		{
+			ally += _ally.health / _ally.maxHealth;
+		}
+
+		if (ally != 0f)
+		{
+			ally /= allies.Count + 1;
+		}	
+
+		foreach (EnemyPosition _enemyDat in enemyData)
+		{
+			enemy += _enemyDat.enemy.health / _enemyDat.enemy.maxHealth;
+		}
+
+		enemy /= enemyData.Count;
+
+		return 1 - ((ally /  enemy) / (allies.Count + enemyData.Count));
+	}
+
 }
 
 

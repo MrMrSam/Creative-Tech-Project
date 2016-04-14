@@ -45,6 +45,7 @@ public class GoapCore
 		goals = new List<GoapGoal> ();
 		goals.Add (new KillEnemy ());
 		goals.Add (new Heal ());
+		goals.Add (new Retreat ());
 		foreach (GoapGoal _goal in goals)
 		{
 			_goal.Init(this);
@@ -57,6 +58,8 @@ public class GoapCore
 		actionPool.Add (new LineUpShot ());
 		actionPool.Add (new ShootEnemy ());
 		actionPool.Add (new TargetEnemy ());
+		actionPool.Add (new ReachSafety ());
+		actionPool.Add (new RepairShip ());
 		foreach (GoapAction _action in actionPool)
 		{
 			_action.Init(this);

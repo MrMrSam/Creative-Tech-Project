@@ -60,10 +60,13 @@
      <Compile Include="Assets\Scripts\GOAP\Actions\FaceEnemy.cs" />
      <Compile Include="Assets\Scripts\GOAP\Actions\FindEnemy.cs" />
      <Compile Include="Assets\Scripts\GOAP\Actions\LineUpShot.cs" />
+     <Compile Include="Assets\Scripts\GOAP\Actions\ReachSafety.cs" />
+     <Compile Include="Assets\Scripts\GOAP\Actions\RepairShip.cs" />
      <Compile Include="Assets\Scripts\GOAP\Actions\ShootEnemy.cs" />
      <Compile Include="Assets\Scripts\GOAP\Actions\TargetEnemy.cs" />
      <Compile Include="Assets\Scripts\GOAP\Goals\Heal.cs" />
      <Compile Include="Assets\Scripts\GOAP\Goals\KillEnemy.cs" />
+     <Compile Include="Assets\Scripts\GOAP\Goals\Retreat.cs" />
      <Compile Include="Assets\Scripts\GOAP\GoapAction.cs" />
      <Compile Include="Assets\Scripts\GOAP\GoapCore.cs" />
      <Compile Include="Assets\Scripts\GOAP\GoapGoal.cs" />

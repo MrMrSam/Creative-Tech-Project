@@ -9,7 +9,6 @@ using System.Collections.Generic;
 public class TeamManager : MonoBehaviour 
 {
 	private Team teamA, teamB;
-	private int teamMember;
 
 	public List<GameObject> activeActors;
 
@@ -70,14 +69,21 @@ public class TeamManager : MonoBehaviour
 		//if this team is actually AI, make them take a turn each
 		if (turnTeam.controlType == Team.TeamType.AI)
 		{
-			foreach (GameObject _AIActorObject in turnTeam.members)
-			{
-				_AIActorObject.GetComponent<AIActor>().goapBrain.TakeTurn();
-			}
-
-			//once all have had their turn, end the team's turn
-			GameManager.instance.TurnEnd();
+			TakeTurns(turnTeam);
 		}
+	}
+
+	private void TakeTurns(Team _team)
+	{
+		int AICount = _team.members.Count;
+
+		for (int i = 0; i < AICount; i++)
+		{
+			_team.members[i].GetComponent<AIActor>().goapBrain.TakeTurn();
+		}
+
+		//once all have had their turn, end the team's turn
+		GameManager.instance.TurnEnd();
 	}
 
 	/// <summary>
@@ -185,8 +191,6 @@ public class TeamManager : MonoBehaviour
 	/// <param name="_team">The team being switched to.</param>
 	public void SwitchTeams(int _team)
 	{
-		teamMember = 0;
-
 		//clears the FOW for the team being switched to.
 		ClearFOW(_team);
 
@@ -409,7 +413,7 @@ public class TeamManager : MonoBehaviour
 			}
 		}
 
-		//if by here, spawnage has not occured, repeat this fuction for each connecting _troct
+		//if by here, spawnage has not occured, repeat this fuction for each connecting _troct (THIS IS NOT UNREACHABLE, DESPITE MONODEVELOP CLAIMS)
 		for (int i = 0; i < 14; i++)
 		{
 			GameObject newTroct = _world[_trOct.GetComponent<TruncOct>().connectionObjects[i]];
